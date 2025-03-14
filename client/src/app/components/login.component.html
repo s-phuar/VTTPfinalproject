@@ -1,0 +1,26 @@
+
+<h2>Login!</h2>
+
+
+<form [formGroup]="form" (submit)="login()">
+    <table>
+        <tr>
+            <td>Email:</td>
+            <td><input type="text" size="30" formControlName="email"></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" size="30" formControlName="password"></td>
+        </tr>
+
+        <tr>
+            <td>{{message}}</td>
+        </tr>
+
+
+        <button type="submit" [disabled]="form.invalid">Login</button>
+        <button type="button" [routerLink]="['/register']">Create Account</button>
+    </table>
+</form>
+
+

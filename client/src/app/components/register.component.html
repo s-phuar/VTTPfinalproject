@@ -1,0 +1,35 @@
+<h2>Register account</h2>
+
+
+<form [formGroup]="form" (submit)="register()">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" size="30" formControlName="name"></td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td><input type="text" size="30" formControlName="email"></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" size="30" formControlName="password"></td>
+        </tr>
+        <tr>
+            <td>Confirm Password:</td>
+            <td><input type="text" size="30" formControlName="password2"></td>
+        </tr>
+
+        <tr>
+            <td>{{message}}</td>
+        </tr>
+
+        <button type="button" (click)="clear()">Clear</button>
+        <button type="submit" [disabled]="form.invalid">Register</button>
+        <button type="button" [routerLink]="['/']">Back</button>
+
+    </table>
+
+</form>
+
+
