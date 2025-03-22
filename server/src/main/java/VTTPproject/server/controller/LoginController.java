@@ -54,20 +54,18 @@ public class LoginController {
             // return to angular, cant use this email
             JsonObject resp = Json.createObjectBuilder()
                 .add("name", name)
-                .add("message", "You cannot use this email")
+                .add("message", "You cannot use this email, account already exists")
                 .build();
             return ResponseEntity
                 .status(HttpStatus.METHOD_NOT_ALLOWED).body(resp.toString());
         }
 
-        //checks for confirm password done client side
+        //checks for confirm password matching is done client side
 
         //create account to store in database
         loginService.createNewAccount(name, email, pw);
-
         //send welcome email
         emailService.welcomeEmail(email, name);
-
 
         JsonObject resp = Json.createObjectBuilder()
             .add("name", name)
@@ -75,7 +73,6 @@ public class LoginController {
             .build();
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(resp.toString());
-
     }
 
 
@@ -88,7 +85,7 @@ public class LoginController {
 
         //check whether email exists in database
         if (!loginService.getAllEmails().contains(email)) {
-            // return to angular, cant use this email
+            // return to angular, login used does not exist
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Invalid email")
                 .build();
@@ -100,7 +97,7 @@ public class LoginController {
         //issue new fresh token every login
         String storedPw = loginService.getPasswordByEmail(email);
         if(storedPw !=null && storedPw.equals(pw)){
-            telegramService.sendMessage("You logged in mate"); //testing tele**************************8
+            // telegramService.sendMessage("You logged in mate"); //testing tele**************************8
             String token = Jwts.builder()
                 .subject(email)
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
@@ -112,32 +109,31 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.OK).body(resp.toString());
         }else{
             JsonObject resp = Json.createObjectBuilder()
-                .add("message", "Invalid email/password")
+                .add("message", "Invalid password")
                 .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp.toString());
         }
-
     }
 
 
     @GetMapping(path = "/api/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> logout(){
         System.out.println("You reached logout...");
+        //angular http interceptor sends over a token which basically contains the email's hash
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null){
+            System.out.println("triggered logout next");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Logged out successfully")
                 .build();
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resp.toString());
         }else{
+            System.out.println("triggered logout error");
             JsonObject resp = Json.createObjectBuilder()
-                .add("message", "Not logged in")
+                .add("message", "Please login first")
                 .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp.toString());
             }
-
-
-
     }
     
 

@@ -16,8 +16,9 @@ public class SecurityConfig{
 
     @Bean public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)throws Exception{
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .anonymous(anonymous -> anonymous.disable())
             .authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers("/api/creation", "/api/login").permitAll()
+                authorize.requestMatchers("/api/creation", "/api/login", "/api/logout").permitAll()
                         .anyRequest()
                         .authenticated();
             })

@@ -26,6 +26,13 @@ export class DashboardComponent implements OnInit{
     })
   }
 
+  //search for stock ticker
+  //set jwt filter to access this page
+  // 1. search indexdb component store for the data (expires in 15)
+  // 2. search call to check couchbase for the data (expires in 15)
+  // 3. search call to api for fresh data
+  //route to details page to display stock details
+
   search(){
     
   }

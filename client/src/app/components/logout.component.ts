@@ -20,16 +20,22 @@ export class LogoutComponent implements OnInit, OnDestroy{
   message = ''
 
   ngOnInit(): void {
-    console.log('Token before logout:', this.loginSvc.getToken()); // Debug token
+    console.info('triggered logout method')
+    console.info('Token before logout:', this.loginSvc.getToken()); // Debug token
     this.sub = this.loginSvc.logout().subscribe({
       next: (resp) =>{
+        console.info('triggered logout next')
         this.message = resp.message
+        console.info('message: ', this.message)
         this.loginSvc.clearToken()
         this.router.navigate(['/'])
       },
-      error: (resp) => {
-        console.info('>>> oops')
-        this.message = resp.message
+      error: (err) => {
+        console.info('triggered logout error')
+        this.message = err.error.message
+        console.info("test", this.message)
+        alert(this.message)
+        this.router.navigate(['/'])
       }
     })
   }

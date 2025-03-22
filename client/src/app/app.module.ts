@@ -18,6 +18,7 @@ const appRoutes: Routes = [
   {path:'register', component: RegisterComponent},
   {path:'logout', component: LogoutComponent},
   {path:'dashboard', component: DashboardComponent},
+  {path:'details', component: DetailsComponent},
   {path:'**', redirectTo: '/', pathMatch:'full'}
 ] 
 

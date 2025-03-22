@@ -25,7 +25,6 @@ export class RegisterComponent implements OnInit, OnDestroy{
     this.form = this.createAccountForm()
   }
 
-
   private createAccountForm():FormGroup{
     return this.fb.group({
       name: this.fb.control<string>('', [Validators.required, Validators.minLength(1)]),
@@ -41,21 +40,24 @@ export class RegisterComponent implements OnInit, OnDestroy{
   }
 
   register(){
-
-    if(this.form.value['password'] == this.form.value['password2']){
+    if(this.form.value['password'] == this.form.value['password2']){ //checks whether confirm password is correct
       const details: Register = this.form.value
       console.info('>>> details: ', details)
       this.sub = this.loginSvc.create(details).subscribe({
-        next: (resp) => this.message = resp.message,
-        error: () => this.message = 'Account already exists'
+        next: (resp) => {
+          console.info('triggered register next')
+          this.message = resp.message
+        },
+        error: (err) => {
+          console.info('triggered register error')
+          this.message = err.error.message
+        }
       })
-      console.info('message: ', this.message)
     }else{
-      //passwords dont match
+      //passwords dont match check
+      console.info('triggered register else condition')
       this.message = "Passwords do not match"
     }
-
-
   }
 
 

@@ -40,15 +40,15 @@ export class LoginComponent implements OnInit, OnDestroy{
     console.info('>>> details: ', details)
     this.sub = this.loginSvc.login(details).subscribe({
       next: (resp) => {
+        console.info('triggered login next')
         console.log('Token received:', resp.token); // Debug token from response
-        this.loginSvc.setToken(resp.token) //overwrite existing token with fresh one
+        this.loginSvc.setToken(resp.token) //overwrite existing token with fresh token
         console.log('Token stored:', this.loginSvc.getToken()); // Verify storage
         this.router.navigate(['/dashboard']) //not yet implemented ***************************
       },
-      error: (resp) => {
-        this.message = resp.message
-        console.info("error resp: ", this.message)
-        this.message = "Login failed"
+      error: (err) => {
+        console.info('triggered login error')
+        this.message = err.error.message
       }
     })
     
