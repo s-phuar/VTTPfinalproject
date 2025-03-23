@@ -25,15 +25,16 @@ public class StockRepository {
     }
 
     //insert stock json string into couchbase
-    public void insertStockJson(JsonObject jObj) {
-        String id = jObj.getString("ticker");
-        if (id == null) {
-            throw new IllegalArgumentException("JSON must contain an 'id' field");
+    public String insertStockJson(JsonObject jObj) {
+        String symbol = jObj.getJsonObject("mi").getString("symbol");
+        if (symbol == null) {
+            throw new IllegalArgumentException("JSON must contain an 'symbol' field");
         }
         //insert raw json string to couchbase
         //******************* update timer */
-        InsertOptions options = InsertOptions.insertOptions().expiry(Duration.ofMinutes(5));
-        template.getCouchbaseClientFactory().getBucket().defaultCollection().insert(id, jObj.toString(), options);        
+        InsertOptions options = InsertOptions.insertOptions().expiry(Duration.ofMinutes(1440));
+        template.getCouchbaseClientFactory().getBucket().defaultCollection().insert(symbol, jObj.toString(), options);        
+        return symbol;
     }
 
     //get stock json by ticker

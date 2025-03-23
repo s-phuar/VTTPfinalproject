@@ -12,6 +12,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthInterceptor } from './http.interceptor';
 import { DetailsComponent } from './components/details.component';
+import { StockService } from './stock.service';
+import { StockStore } from './stock.store';
 
 const appRoutes: Routes = [
   {path:'', component: LoginComponent},
@@ -34,7 +36,7 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule, ReactiveFormsModule, RouterModule.forRoot(appRoutes)
   ],
-  providers: [LoginService, provideHttpClient(withInterceptorsFromDi()), { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
+  providers: [StockStore, StockService, LoginService, provideHttpClient(withInterceptorsFromDi()), { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

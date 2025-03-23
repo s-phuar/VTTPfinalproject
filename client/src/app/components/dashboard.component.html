@@ -1,14 +1,24 @@
+<h1>Stock Dashboard!</h1>
+
 <!-- search stock via ticker  -->
 <form [formGroup]="form" (submit)="search()">
-    
+    <tr>
+        <td></td>
+        <td><input type="text" size="30" formControlName="ticker"></td>
+    </tr>
+
+
     <button type="submit" [disabled]="form.invalid">Search</button>
 </form>
 
 
 
-
-<!-- display current list of stock associated with user -->
+<button type="button" [routerLink]="['/logout']">Logout</button>
 
 <!-- maybe a button to link to telegram -->
 
-<button type="button" [routerLink]="['/logout']">Logout</button>
+
+<!-- display current list of stock associated with user -->
+<h2>Portfolio</h2>
+
+

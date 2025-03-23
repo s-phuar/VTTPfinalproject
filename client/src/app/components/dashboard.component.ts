@@ -12,12 +12,14 @@ export class DashboardComponent implements OnInit{
 
   private router = inject(Router)
   private fb = inject(FormBuilder)
-
   protected form !:FormGroup
 
 
   ngOnInit(): void {
     this.form = this.createAccountForm()
+
+    //need to pull portfolio from database everytime i come here, consider storing portfolio data in component store
+    
   }
 
   private createAccountForm():FormGroup{
@@ -26,15 +28,9 @@ export class DashboardComponent implements OnInit{
     })
   }
 
-  //search for stock ticker
-  //set jwt filter to access this page
-  // 1. search indexdb component store for the data (expires in 15)
-  // 2. search call to check couchbase for the data (expires in 15)
-  // 3. search call to api for fresh data
-  //route to details page to display stock details
 
   search(){
-    
+    this.router.navigate(['/details'], {queryParams: {ticker: this.form.controls['ticker'].value.trim()}})
   }
 
 

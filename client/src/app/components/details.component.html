@@ -1,1 +1,32 @@
-<p>details works!</p>
+<!-- search stock via ticker  -->
+<form [formGroup]="form" (submit)="search()">
+    <tr>
+        <td></td>
+        <td><input type="text" size="30" formControlName="ticker"></td>
+    </tr>
+
+
+    <button type="submit" [disabled]="form.invalid">Search</button>
+</form>
+
+
+
+
+@if (searchResults) {
+    {{searchResults.mi.companyName}}
+    {{searchResults.mi.symbol}}
+    {{searchResults.mi.todayEpochMilli}}
+
+    {{searchResults.ar.assetTurnoverTTM}}
+    {{searchResults.lr.cashConversionCycleTTM}}
+    {{searchResults.pr.companyEquityMultiplierTTM}}
+    {{searchResults.sr.capitalExpenditureCoverageRatioTTM}}
+    {{searchResults.vr.payoutRatioTTM}}
+
+
+}
+
+
+
+<button type="button" (click)="addStock()">add</button>
+<button type="button" [routerLink]="['/dashboard']">back</button>

@@ -81,8 +81,7 @@ public class LoginController {
         JsonObject req = Utils.strToJson(payload); 
 
         String email = req.getString("email");
-        String pw = req.getString("password");
-
+        String pw = req.getString("password");        
         //check whether email exists in database
         if (!loginService.getAllEmails().contains(email)) {
             // return to angular, login used does not exist
