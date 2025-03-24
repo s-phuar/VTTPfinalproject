@@ -18,7 +18,7 @@ public class SecurityConfig{
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .anonymous(anonymous -> anonymous.disable())
             .authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers("/api/creation", "/api/login", "/api/logout", "/api/search", "/api/save").permitAll()
+                authorize.requestMatchers("/api/creation", "/api/login", "/api/logout", "/api/search", "/api/save", "/api/portfolio", "/api/delete", "/api/donate").permitAll()
                         .anyRequest()
                         .authenticated();
             })

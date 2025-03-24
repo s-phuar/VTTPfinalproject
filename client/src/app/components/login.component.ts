@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy{
         console.info('triggered login next')
         console.log('Token received:', resp.token); // Debug token from response
         this.loginSvc.setToken(resp.token) //overwrite existing token with fresh token
+        this.loginSvc.setEmail(details.email)
         console.log('Token stored:', this.loginSvc.getToken()); // Verify storage
         this.router.navigate(['/dashboard']) //not yet implemented ***************************
       },

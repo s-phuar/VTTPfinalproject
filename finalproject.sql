@@ -11,13 +11,15 @@ CREATE TABLE users (
 CREATE TABLE credentials (
     users_email VARCHAR(255) unique not null primary key,
     password VARCHAR(255) not null, -- only used for local users, ignored for oauth2 users
-    constraint fk_credentials_email foreign key(users_email) REFERENCES users(email) ON DELETE CASCADE
+    constraint fk_credentials_email foreign key(users_email) references users(email) on delete cascade
 );
 
 CREATE TABLE stocks(
-	user_email VARCHAR(255) unique not null primary key,
-    ticker VARCHAR(255) not null,
-	constraint fk_stocks_email foreign key(user_email) REFERENCES users(email) ON DELETE CASCADE
+	user_email VARCHAR(255) not null,
+    ticker VARCHAR(50) not null,
+	company_name VARCHAR(255) not null,
+	constraint fk_stocks_email foreign key(user_email) REFERENCES users(email) on delete cascade,
+    constraint unique_user_ticker unique(user_email, ticker)
 );
 
 drop table credentials;

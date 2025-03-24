@@ -23,6 +23,11 @@ export interface Stock{
     vr: ValuationRatios
 }
 
+export interface StockSummary{
+    symbol: string
+    companyName: string
+}
+
 export interface MiscItems{
     symbol: string
     companyName: string

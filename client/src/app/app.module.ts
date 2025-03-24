@@ -14,12 +14,14 @@ import { AuthInterceptor } from './http.interceptor';
 import { DetailsComponent } from './components/details.component';
 import { StockService } from './stock.service';
 import { StockStore } from './stock.store';
+import { DonationComponent } from './components/donation.component';
 
 const appRoutes: Routes = [
   {path:'', component: LoginComponent},
   {path:'register', component: RegisterComponent},
   {path:'logout', component: LogoutComponent},
   {path:'dashboard', component: DashboardComponent},
+  {path:'donation', component: DonationComponent},
   {path:'details', component: DetailsComponent},
   {path:'**', redirectTo: '/', pathMatch:'full'}
 ] 
@@ -31,7 +33,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     RegisterComponent,
     DashboardComponent,
-    DetailsComponent
+    DetailsComponent,
+    DonationComponent
   ],
   imports: [
     BrowserModule, ReactiveFormsModule, RouterModule.forRoot(appRoutes)

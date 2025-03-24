@@ -11,7 +11,7 @@
     <button type="submit" [disabled]="form.invalid">Search</button>
 </form>
 
-
+<button (click)="donate()">Donate</button>
 
 <button type="button" [routerLink]="['/logout']">Logout</button>
 
@@ -21,4 +21,15 @@
 <!-- display current list of stock associated with user -->
 <h2>Portfolio</h2>
 
+@for (stock of stockSum; let idx = $index; track stock.symbol) {
+    <a [routerLink]="['/details']" [queryParams]="{ ticker: stock.symbol }">
+        {{ stock.symbol }} ({{ stock.companyName }})
+    </a>
+<button (click)="delete(stock.symbol)">Delete</button>
+<br>
+}
+
+@empty {
+    <h2>portfolio is empty!</h2>
+}
 

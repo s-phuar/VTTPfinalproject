@@ -5,6 +5,7 @@ import { StockService } from '../stock.service';
 import { Stock } from '../models';
 import { StockStore } from '../stock.store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-details',
@@ -23,11 +24,18 @@ export class DetailsComponent implements OnInit, OnDestroy{
   private activatedRoute = inject(ActivatedRoute)
   private stockSvc = inject(StockService)
   private stockStore = inject(StockStore)
+  private loginSvc = inject(LoginService)
   private fb = inject(FormBuilder)
   private router = inject(Router)
 
 
   ngOnInit(): void {
+    if (!this.loginSvc.isLoggedIn()) {
+      alert('Please login first');
+      this.router.navigate(['/login']);
+      return;
+  }
+
     this.form = this.createAccountForm()
 
     this.urlSub = this.activatedRoute.queryParams
@@ -94,7 +102,8 @@ export class DetailsComponent implements OnInit, OnDestroy{
     //a. stores in couchbase (for 24 hours, keep things fresh)
 
   addStock(){
-    this.stockSvc.save(this.searchResults).subscribe({
+    const email = localStorage.getItem('email')!;
+    this.stockSvc.save(this.searchResults, email).subscribe({
       next: (resp) =>{
         console.info('triggered save next')
         console.info(resp)
@@ -103,7 +112,7 @@ export class DetailsComponent implements OnInit, OnDestroy{
         console.info('triggered save error')
         this.errorMessage = err.error.message
         console.info(">>> search error:", this.errorMessage)
-      } 
+      }
     })
   }
 

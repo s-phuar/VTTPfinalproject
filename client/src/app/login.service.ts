@@ -20,6 +20,14 @@ export class LoginService{
         return this.http.get('/api/logout') //need to send authorizatio hedaer?
     }
 
+    setEmail(email: string): void{
+        localStorage.setItem('email', email)
+    }
+
+    getEmail(): string | null{
+        return localStorage.getItem('email')
+    }
+
     setToken(token: string): void{
         localStorage.setItem('token', token)
     }
