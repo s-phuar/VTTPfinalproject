@@ -17,7 +17,7 @@ export class LoginService{
     }
 
     logout():Observable<any>{
-        return this.http.get('/api/logout') //need to send authorizatio hedaer?
+        return this.http.get('/api/logout')
     }
 
     setEmail(email: string): void{

@@ -5,6 +5,7 @@ import { StockService } from '../stock.service';
 import { Observable } from 'rxjs';
 import { StockSummary } from '../models';
 import { LoginService } from '../login.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,8 +20,10 @@ export class DashboardComponent implements OnInit{
   protected form !:FormGroup
   private stockSvc = inject(StockService)
   private loginSvc = inject(LoginService)
+  private http = inject(HttpClient)
   errorMessage !: string
   stockSum !: StockSummary[]
+  metrics: string | null = null; // Store metrics to display
 
   ngOnInit(): void {
     if (!this.loginSvc.isLoggedIn()) {
@@ -75,6 +78,18 @@ export class DashboardComponent implements OnInit{
     this.router.navigate(['/donation']);
   }
 
+
+  // Check if the logged-in user is admin
+  isAdminUser(): boolean {
+    const email = localStorage.getItem('email')
+    return email === 'samuel.phuar@gmail.com'
+  }
+
+  // Open Prometheus in a new tab
+  openPrometheus() {
+    const prometheusUrl = 'http://localhost:8080/actuator/prometheus'
+    window.open(prometheusUrl, '_blank')
+  }
   
 
 }

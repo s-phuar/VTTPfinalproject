@@ -15,8 +15,8 @@
 
 <button type="button" [routerLink]="['/logout']">Logout</button>
 
-<!-- maybe a button to link to telegram -->
-
+<!-- prometeus access -->
+<button *ngIf="isAdminUser()" (click)="openPrometheus()">View Metrics</button>
 
 <!-- display current list of stock associated with user -->
 <h2>Portfolio</h2>
