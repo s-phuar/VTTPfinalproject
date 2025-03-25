@@ -64,7 +64,7 @@ public class StockService {
             // Increment the stock search counter
             stockSearchCounter.increment(); //Metric 3
 
-            //try grab from database first
+            //try grab from couchbase first
             Optional<JsonObject> stockJson = stockRepository.findStockByTicker(ticker);
             if (stockJson.isEmpty()) {
                 //if empty, grab from api call
@@ -192,6 +192,8 @@ public class StockService {
 
     
     public List<StockSummary> getPortfolio(String email){
+        System.out.println("reached redis portfolio service");
+
         return stockRepository.getPortfolio(email);
     }
 

@@ -19,6 +19,14 @@ public class Utils {
         return jObj;
     }
 
+    
+    public static JsonArray strToJsonArray(String str){
+        JsonReader reader = Json.createReader(new StringReader(str));
+        JsonArray jArray = reader.readArray();
+
+        return jArray;
+    }
+
 
     public static JsonObject stockInfoParser(String details) throws NullPointerException, IndexOutOfBoundsException{
         JsonReader reader = Json.createReader(new StringReader(details));
