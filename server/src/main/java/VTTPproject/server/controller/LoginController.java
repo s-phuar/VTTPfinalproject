@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import VTTPproject.server.service.EmailService;
 import VTTPproject.server.service.LoginService;
-import VTTPproject.server.service.TelegramService;
 import VTTPproject.server.utils.Utils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -31,9 +30,6 @@ public class LoginController {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-
-    @Autowired
-    private TelegramService telegramService;
 
     @Autowired
     private EmailService emailService;
@@ -96,7 +92,6 @@ public class LoginController {
         //issue new fresh token every login
         String storedPw = loginService.getPasswordByEmail(email);
         if(storedPw !=null && storedPw.equals(pw)){
-            // telegramService.sendMessage("You logged in mate"); //testing tele**************************8
             String token = Jwts.builder()
                 .subject(email)
                 .expiration(new Date(System.currentTimeMillis() + 86400000))

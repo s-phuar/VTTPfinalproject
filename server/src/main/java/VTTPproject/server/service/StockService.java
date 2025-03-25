@@ -23,6 +23,9 @@ import VTTPproject.server.model.StockSummary;
 import VTTPproject.server.model.ValuationRatio;
 import VTTPproject.server.repository.StockRepository;
 import VTTPproject.server.utils.Utils;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import jakarta.json.JsonObject;
 
 @Service
@@ -34,28 +37,51 @@ public class StockService {
     @Value("${stock.api.key}")
     private String stockApi;
 
+    private final Timer stockSearchTimer;
+    private final Counter stockSearchCounter;
+
     public static final String GET_URL = "https://financialmodelingprep.com/api/v3/";
 
+
+    @Autowired
+    public StockService(MeterRegistry meterRegistry) {
+        // Metric 2: Timer for stock search duration
+        this.stockSearchTimer = Timer.builder("app_stock_search_duration_metric2")
+                .description("Time taken for stock searches in seconds")
+                .register(meterRegistry);
+
+        // Metric 3: Counter for stock search usage
+        this.stockSearchCounter = Counter.builder("app_stock_search_count_metric3")
+                .description("Total number of stock searches performed")
+                .register(meterRegistry);
+    }
+
+
+
     public JsonObject searchDetails(String ticker) throws NullPointerException, IndexOutOfBoundsException{
-        //try grab from database first
-        Optional<JsonObject> stockJson = stockRepository.findStockByTicker(ticker);
-        if(stockJson.isEmpty()){
-            //if empty, grab from api call
-            Stock stock = searchAPI(ticker);
+        // Record the time taken for the search through database/api call
+        return stockSearchTimer.record(() -> { //Metric 2
+            // Increment the stock search counter
+            stockSearchCounter.increment(); //Metric 3
 
-            JsonObject mi = MiscItems.buildMiscItemsJson(stock.getMi());
-            JsonObject ar = ActivityRatio.buildActivityRatioJson(stock.getAr());
-            JsonObject lr = LiquidityRatio.buildLiquidityRatioJson(stock.getLr());
-            JsonObject pr = ProfitabilityRatio.buildProfitabilityRatioJson(stock.getPr());
-            JsonObject sr = SolvencyRatio.buildSolvencyRatioJson(stock.getSr());
-            JsonObject vr = ValuationRatio.buildValuationRatioJson(stock.getVr());
-            JsonObject apiJson = Stock.toStockJson(mi, ar, lr, pr, sr, vr);
+            //try grab from database first
+            Optional<JsonObject> stockJson = stockRepository.findStockByTicker(ticker);
+            if (stockJson.isEmpty()) {
+                //if empty, grab from api call
+                Stock stock = searchAPI(ticker);
 
-            return apiJson;
-        }
-        //returning json from database
-        System.out.println("returning json from database \n\n\n");
-        return stockJson.get();        
+                JsonObject mi = MiscItems.buildMiscItemsJson(stock.getMi());
+                JsonObject ar = ActivityRatio.buildActivityRatioJson(stock.getAr());
+                JsonObject lr = LiquidityRatio.buildLiquidityRatioJson(stock.getLr());
+                JsonObject pr = ProfitabilityRatio.buildProfitabilityRatioJson(stock.getPr());
+                JsonObject sr = SolvencyRatio.buildSolvencyRatioJson(stock.getSr());
+                JsonObject vr = ValuationRatio.buildValuationRatioJson(stock.getVr());
+                return Stock.toStockJson(mi, ar, lr, pr, sr, vr);
+            }
+            //returning json from database
+            System.out.println("returning json from database \n\n\n");
+            return stockJson.get();
+        });     
     }
 
     @Transactional

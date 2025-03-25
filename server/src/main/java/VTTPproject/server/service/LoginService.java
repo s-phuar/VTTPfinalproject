@@ -9,11 +9,25 @@ import org.springframework.transaction.annotation.Transactional;
 import VTTPproject.server.model.Credentials;
 import VTTPproject.server.model.User;
 import VTTPproject.server.repository.LoginRepository;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Counter;
 
 @Service
 public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
+
+
+    private final Counter loginCounter;
+
+    @Autowired
+    public LoginService(MeterRegistry meterRegistry) {
+        // Metric 1: login attempts counter
+        this.loginCounter = Counter.builder("app_login_count_metric1")
+                .description("Total number of login attempts")
+                .register(meterRegistry);
+    }
+
 
     //get all emails
     public List<String> getAllEmails(){
@@ -36,6 +50,8 @@ public class LoginService {
 
 
     public String getPasswordByEmail(String email){
+        // Metric 1: ++ login counter when checking password
+        loginCounter.increment();
         Credentials cred = loginRepository.getCredentialByEmail(email);
         return cred.getPassword();
     }
