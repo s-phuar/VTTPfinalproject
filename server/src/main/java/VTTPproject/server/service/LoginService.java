@@ -17,7 +17,6 @@ public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
 
-
     private final Counter loginCounter;
 
     @Autowired

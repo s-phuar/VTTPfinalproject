@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import VTTPproject.server.service.EmailService;
 import VTTPproject.server.service.LoginService;
+import VTTPproject.server.service.TelegramBotService;
 import VTTPproject.server.utils.Utils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -28,14 +29,16 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+    @Autowired
+    private TelegramBotService telegramBotService;
 
     @Autowired
     private EmailService emailService;
 
-    //angular will call these endpoints expected responseentities
+    @Value("${jwt.secret.key}")
+    private String secretKey;
 
+    //angular will call these endpoints expected responseentities
     @PostMapping(path = "/api/creation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> creation(@RequestBody String payload){
         //expecting username, email, password
@@ -94,12 +97,13 @@ public class LoginController {
         if(storedPw !=null && storedPw.equals(pw)){
             String token = Jwts.builder()
                 .subject(email)
-                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .expiration(new Date(System.currentTimeMillis() + 86400000)) //1 day
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), Jwts.SIG.HS512)                
                 .compact();
             JsonObject resp = Json.createObjectBuilder()
                 .add("token", token)
                 .build();
+            telegramBotService.sendMessage("User logged in: " + email + " at " + new java.util.Date()); //telegram
             return ResponseEntity.status(HttpStatus.OK).body(resp.toString());
         }else{
             JsonObject resp = Json.createObjectBuilder()
@@ -112,17 +116,17 @@ public class LoginController {
 
     @GetMapping(path = "/api/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> logout(){
-        System.out.println("You reached logout...");
+        // System.out.println("You reached logout...");
         //angular http interceptor sends over a token which basically contains the email's hash
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null){
-            System.out.println("triggered logout next");
+            // System.out.println("triggered logout next");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Logged out successfully")
                 .build();
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resp.toString());
         }else{
-            System.out.println("triggered logout error");
+            // System.out.println("triggered logout error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();

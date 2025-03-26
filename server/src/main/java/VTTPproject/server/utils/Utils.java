@@ -31,7 +31,8 @@ public class Utils {
     public static JsonObject stockInfoParser(String details) throws NullPointerException, IndexOutOfBoundsException{
         JsonReader reader = Json.createReader(new StringReader(details));
         JsonArray jArray = reader.readArray();
-        JsonObject jObj = jArray.getJsonObject(0); //hits nullpointer exception
+        JsonObject jObj = jArray.getJsonObject(0); // may hit nullpointer exception
+
 
         return jObj;
     }

@@ -52,7 +52,7 @@ public class PaymentController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp.toString());
             }
         }else{
-            System.out.println("triggered dashboard error");
+            // System.out.println("triggered dashboard error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();

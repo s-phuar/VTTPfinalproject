@@ -1,32 +1,377 @@
-<!-- search stock via ticker  -->
-<form [formGroup]="form" (submit)="search()">
-    <tr>
-        <td></td>
-        <td><input type="text" size="30" formControlName="ticker"></td>
-    </tr>
+<div class="parent">
+  <!-- black bar -->
+  <div class="top-bar">
+    <div class="left-container">
+      <button mat-raised-button color="accent" class="add-button" type="button" (click)="addStock()">
+        Add
+      </button>
+    </div>
+    <div class="right-container">
+      <button mat-raised-button color="basic" class="back-button" type="button" [routerLink]="['/dashboard']">
+        Back
+      </button>
+    </div>
+  </div>
 
+  <!-- search form -->
+  <div class="search-container">
+    <mat-card class="search-card">
+      <mat-card-content class="search-content">
+        <form [formGroup]="form" (submit)="search()" class="search-form">
+          <mat-form-field appearance="outline" class="search-input">
+            <mat-label>Search Ticker</mat-label>
+            <input matInput type="text" formControlName="ticker">
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="search-button">
+            Search
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-    <button type="submit" [disabled]="form.invalid">Search</button>
-</form>
+  <!-- Stock Details -->
+  <div *ngIf="searchResults" class="stock-details">
+    <!-- Key Information Card -->
+    <mat-card class="stock-info-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title>Stock: {{searchResults.mi.symbol}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stock-info-content">
+          <img *ngIf="searchResults.mi.image" [src]="searchResults.mi.image" alt="Company Image" class="company-image">
+          <p><strong>Company Name:</strong> {{searchResults.mi.companyName}}</p>
+          <p><strong>Date pulled on:</strong> {{searchResults.mi.todayEpochMilli | date:'MM-dd-yyyy'}}</p>
+          <p><strong>Price:</strong> ${{searchResults.mi.price | number:'1.2-2'}}</p>
+          <p><strong>DCF Price:</strong> {{searchResults.mi.dcf | number:'1.2-2'}}</p>
+          <p><strong>Beta:</strong> {{searchResults.mi.beta | number:'1.2-2'}}</p>
+          <p><strong>PE Ratio:</strong> {{searchResults.vr.peRatioTTM | number:'1.2-2'}}</p>
+          <p><strong>PEG Ratio:</strong> {{searchResults.vr.pegRatioTTM | number:'1.2-2'}}</p>
+          <p><strong>Market Cap:</strong> {{ searchResults.mi.mktCap | currency: 'USD':'symbol':'1.0-0' }}</p>
+          <p><strong>Description:</strong> {{searchResults.mi.description}}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
+    <!-- Activity Ratios Table -->
+    <mat-card class="mat-elevation-z2 mat-table-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title><strong>Activity Ratios</strong></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="mat-table">
+          <thead>
+            <tr class="mat-header-row">
+              <th class="mat-header-cell">Name</th>
+              <th class="mat-header-cell">Value</th>
+              <th class="mat-header-cell">Formula</th>
+              <th class="mat-header-cell">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mat-row">
+              <td class="mat-cell">Inventory Turnover</td>
+              <td class="mat-cell">{{searchResults.ar.inventoryTurnover| number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Cost of Goods Sold / Average Inventory</td>
+              <td class="mat-cell">Measures how quickly inventory is sold and replaced over a year.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Days of Inventory on Hand</td>
+              <td class="mat-cell">{{searchResults.ar.daysOfInventoryOnHand | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">365 / Inventory Turnover</td>
+              <td class="mat-cell">Indicates the average number of days inventory is held before being sold.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Receivables Turnover</td>
+              <td class="mat-cell">{{searchResults.ar.receivablesTurnover | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Revenue / Average Accounts Receivable</td>
+              <td class="mat-cell">Measures how many times a company collects its average accounts receivable balance in a year.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Days Sales Outstanding</td>
+              <td class="mat-cell">{{searchResults.ar.daysSalesOutstanding | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">365 / Receivables Turnover</td>
+              <td class="mat-cell">Indicates the average number of days it takes for a company to collect its receivables.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Payables Turnover</td>
+              <td class="mat-cell">{{searchResults.ar.payablesTurnover | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Cost of Goods Sold / Average Accounts Payable</td>
+              <td class="mat-cell">Measures how often a company pays off its accounts payable in a year.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Days Payables Outstanding</td>
+              <td class="mat-cell">{{searchResults.ar.daysPayablesOutstanding | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">365 / Payables Turnover</td>
+              <td class="mat-cell">Indicates the average number of days a company takes to pay its accounts payable.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Fixed Asset Turnover</td>
+              <td class="mat-cell">{{searchResults.ar.fixedAssetTurnoverTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Revenue / Average Net Fixed Assets</td>
+              <td class="mat-cell">Measures how efficiently a company uses its fixed assets to generate revenue.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Asset Turnover</td>
+              <td class="mat-cell">{{searchResults.ar.assetTurnoverTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Revenue / Average Total Assets</td>
+              <td class="mat-cell">Measures how efficiently a company uses its total assets to generate revenue.</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
 
+    <!-- Liquidity Ratios Table -->
+    <mat-card class="mat-elevation-z2 mat-table-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title><strong>Liquidity Ratios</strong></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="mat-table">
+          <thead>
+            <tr class="mat-header-row">
+              <th class="mat-header-cell">Name</th>
+              <th class="mat-header-cell">Value</th>
+              <th class="mat-header-cell">Formula</th>
+              <th class="mat-header-cell">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mat-row">
+              <td class="mat-cell">Current Ratio</td>
+              <td class="mat-cell">{{searchResults.lr.currentRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Current Assets / Current Liabilities</td>
+              <td class="mat-cell">Measures a company's ability to cover its short-term obligations with its short-term assets.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Quick Ratio</td>
+              <td class="mat-cell">{{searchResults.lr.quickRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">(Cash + Marketable Securities + Accounts Receivable) / Current Liabilities</td>
+              <td class="mat-cell">A stricter measure than the current ratio, excluding inventory from current assets.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Cash Ratio</td>
+              <td class="mat-cell">{{searchResults.lr.cashRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">(Cash + Marketable Securities) / Current Liabilities</td>
+              <td class="mat-cell">Measures a company's ability to cover its short-term liabilities with only its most liquid assets.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Cash Conversion Cycle</td>
+              <td class="mat-cell">{{searchResults.lr.cashConversionCycleTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Days Sales Outstanding + Days Inventory on Hand - Days Payables</td>
+              <td class="mat-cell">Measures the time it takes for a company to convert its investments in inventory and accounts receivable into cash flows from sales.</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
 
+    <!-- Solvency Ratios Table -->
+    <mat-card class="mat-elevation-z2 mat-table-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title><strong>Solvency Ratios</strong></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="mat-table">
+          <thead>
+            <tr class="mat-header-row">
+              <th class="mat-header-cell">Name</th>
+              <th class="mat-header-cell">Value</th>
+              <th class="mat-header-cell">Formula</th>
+              <th class="mat-header-cell">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mat-row">
+              <td class="mat-cell">Debt Ratio</td>
+              <td class="mat-cell">{{searchResults.sr.debtRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Total Debt / Total Assets</td>
+              <td class="mat-cell">Measures the proportion of a company's assets financed by debt.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Debt Equity Ratio</td>
+              <td class="mat-cell">{{searchResults.sr.debtEquityRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Total Debt / Shareholder's Equity</td>
+              <td class="mat-cell">Measures the relative proportion of debt and equity in financing a company's assets.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Interest Coverage</td>
+              <td class="mat-cell">{{searchResults.sr.interestCoverageTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">EBIT / Interest Expense</td>
+              <td class="mat-cell">Measures how easily a company can pay interest on its outstanding debt.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Cash Flow Coverage Ratios</td>
+              <td class="mat-cell">{{searchResults.sr.cashFlowCoverageRatiosTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Operating Cash Flow / Total Debt</td>
+              <td class="mat-cell">Measures a company's ability to pay its debts using cash flow.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Short Term Coverage Ratios</td>
+              <td class="mat-cell">{{searchResults.sr.shortTermCoverageRatiosTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Operating Cash Flow / Short-term Debt</td>
+              <td class="mat-cell">Measures a company's ability to cover short-term debt with operating cash flow.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Capital Expenditure Coverage Ratio</td>
+              <td class="mat-cell">{{searchResults.sr.capitalExpenditureCoverageRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Operating Cash Flow / Capital Expenditures</td>
+              <td class="mat-cell">Measures a company's ability to cover capital expenditures with operating cash flow.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Dividend Paid and Capex Coverage Ratio</td>
+              <td class="mat-cell">{{searchResults.sr.dividendPaidAndCapexCoverageRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Operating Cash Flow / (Dividends + Capital Expenditures)</td>
+              <td class="mat-cell">Measures a company's ability to cover both dividends and capital expenditures.</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
 
-@if (searchResults) {
-    {{searchResults.mi.companyName}}
-    {{searchResults.mi.symbol}}
-    {{searchResults.mi.todayEpochMilli}}
+    <!-- Profitability Ratios Table -->
+    <mat-card class="mat-elevation-z2 mat-table-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title><strong>Profitability Ratios</strong></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="mat-table">
+          <thead>
+            <tr class="mat-header-row">
+              <th class="mat-header-cell">Name</th>
+              <th class="mat-header-cell">Value</th>
+              <th class="mat-header-cell">Formula</th>
+              <th class="mat-header-cell">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mat-row">
+              <td class="mat-cell">Gross Profit Margin</td>
+              <td class="mat-cell">{{searchResults.pr.grossProfitMarginTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Gross Profit / Revenue</td>
+              <td class="mat-cell">Measures the percentage of revenue that exceeds the cost of goods sold.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Operating Profit Margin</td>
+              <td class="mat-cell">{{searchResults.pr.operatingProfitMarginTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Operating Income / Revenue</td>
+              <td class="mat-cell">Measures the percentage of revenue remaining after paying for variable costs of production.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Pretax Profit Margin</td>
+              <td class="mat-cell">{{searchResults.pr.pretaxProfitMarginTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Earnings Before Taxes / Revenue</td>
+              <td class="mat-cell">Measures a company's profitability before tax expenses.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Net Profit Margin</td>
+              <td class="mat-cell">{{searchResults.pr.netProfitMarginTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Net Profit / Revenue</td>
+              <td class="mat-cell">Measures the percentage of revenue that turns into profit after all expenses.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Return on Assets</td>
+              <td class="mat-cell">{{searchResults.pr.returnOnAssetsTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Net Income / Average Total Assets</td>
+              <td class="mat-cell">Measures how effectively a company is using its assets to generate profits.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Return on Equity</td>
+              <td class="mat-cell">{{searchResults.pr.returnOnEquityTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Net Income / Average Shareholder's Equity</td>
+              <td class="mat-cell">Measures how effectively a company generates profits from its equity financing.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Return on Capital Employed</td>
+              <td class="mat-cell">{{searchResults.pr.returnOnCapitalEmployedTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">EBIT / (Total Assets - Current Liabilities)</td>
+              <td class="mat-cell">Measures the profitability of a company's capital investments.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Company Equity Multiplier</td>
+              <td class="mat-cell">{{searchResults.pr.companyEquityMultiplierTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Average Total Assets / Average Shareholder's Equity</td>
+              <td class="mat-cell">Measures the degree to which a company uses equity to finance its assets.</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
 
-    {{searchResults.ar.assetTurnoverTTM}}
-    {{searchResults.lr.cashConversionCycleTTM}}
-    {{searchResults.pr.companyEquityMultiplierTTM}}
-    {{searchResults.sr.capitalExpenditureCoverageRatioTTM}}
-    {{searchResults.vr.payoutRatioTTM}}
-
-
-}
-
-
-
-<button type="button" (click)="addStock()">add</button>
-<button type="button" [routerLink]="['/dashboard']">back</button>
+    <!-- Valuation Ratios Table -->
+    <mat-card class="mat-elevation-z2 mat-table-card">
+      <mat-card-header class="centered-header">
+        <mat-card-title><strong>Valuation Ratios</strong></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="mat-table">
+          <thead>
+            <tr class="mat-header-row">
+              <th class="mat-header-cell">Name</th>
+              <th class="mat-header-cell">Value</th>
+              <th class="mat-header-cell">Formula</th>
+              <th class="mat-header-cell">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mat-row">
+              <td class="mat-cell">PE Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.peRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Price per Share / Earnings per Share</td>
+              <td class="mat-cell">Measures the market price relative to the earnings generated by the company.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">PEG Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.pegRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">PE Ratio / Earnings Growth Rate</td>
+              <td class="mat-cell">Measures the stock's valuation relative to its earnings growth.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Price to Book Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.priceToBookRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Market Price per Share / Book Value per Share</td>
+              <td class="mat-cell">Compares a company's market value to its book value.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Price to Sales Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.priceToSalesRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Market Capitalization / Revenue</td>
+              <td class="mat-cell">Measures the price investors are willing to pay for each dollar of a company's revenue.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Price Earnings Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.priceEarningsRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Market Price per Share / Earnings per Share</td>
+              <td class="mat-cell">Another term for PE Ratio, measuring price relative to earnings.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Price Fair Value</td>
+              <td class="mat-cell">{{searchResults.vr.priceFairValueTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Market Price / Intrinsic Value</td>
+              <td class="mat-cell">Compares the market price to an estimated fair value.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Payout Ratio</td>
+              <td class="mat-cell">{{searchResults.vr.payoutRatioTTM | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Dividends / Net Income</td>
+              <td class="mat-cell">Measures the proportion of earnings paid out as dividends to shareholders.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Retention Rate</td>
+              <td class="mat-cell">{{searchResults.vr.retentionRate | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">1 - Dividend Payout Ratio</td>
+              <td class="mat-cell">Indicates the proportion of earnings retained for reinvestment back into the company.</td>
+            </tr>
+            <tr class="mat-row">
+              <td class="mat-cell">Sustainable Growth Rate</td>
+              <td class="mat-cell">{{searchResults.vr.sustainableGrowthRate | number:'1.2-2'}}</td>
+              <td class="mat-cell formula">Retention Rate x Return on Equity</td>
+              <td class="mat-cell">Represents the maximum growth rate a company can sustain without increasing debt or equity financing.</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

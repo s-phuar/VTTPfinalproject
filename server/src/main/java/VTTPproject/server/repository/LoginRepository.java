@@ -36,8 +36,7 @@ public class LoginRepository {
         try{
             c= template.queryForObject(sql.sql_getCredentialByEmail, BeanPropertyRowMapper.newInstance(Credentials.class), email);
         }catch(DataAccessException ex){
-            //throw custom exception???********************************************************************
-            System.out.println("Cred object not found in credentials");
+            System.out.println("Credential object not found in credentials");
         }
         
         return c;

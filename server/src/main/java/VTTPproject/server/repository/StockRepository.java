@@ -16,9 +16,9 @@ import org.springframework.stereotype.Repository;
 import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.kv.UpsertOptions;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import VTTPproject.server.model.StockSummary;
 import VTTPproject.server.utils.Utils;
+import VTTPproject.server.utils.sql;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
@@ -37,21 +37,16 @@ public class StockRepository {
     @Autowired
     JdbcTemplate templateSQL;
 
-    
-    private static final String SQL_INSERT = "INSERT INTO stocks (user_email, ticker, company_name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE company_name = VALUES(company_name)";
-    private static final String SQL_DELETE = "DELETE FROM stocks WHERE user_email = ? AND ticker = ?";
-    private static final String SQL_SELECT_BY_EMAIL = "SELECT ticker, company_name FROM stocks WHERE user_email = ?";
-
     public void updateSQL(String email, String symbol, String companyName, boolean insert){
         if (insert) {
-            templateSQL.update(SQL_INSERT, email, symbol, companyName);
+            templateSQL.update(sql.sql_insert, email, symbol, companyName);
             templateRedis.delete("portfolio:"+ email); //clear redis for the user
-            System.out.println("reached redis portfolio insert");
+            // System.out.println("reached redis portfolio insert");
 
         }else{
-            templateSQL.update(SQL_DELETE, email, symbol);
+            templateSQL.update(sql.sql_delete, email, symbol);
             templateRedis.delete("portfolio:"+ email); //clear redis for the user
-            System.out.println("reached redis portfolio delete");
+            // System.out.println("reached redis portfolio delete");
         }
     }
 
@@ -60,7 +55,7 @@ public class StockRepository {
 
         String cachedPortfolio = templateRedis.opsForValue().get("portfolio:"+ email);
         if (cachedPortfolio != null) {
-            System.out.println("reached redis portfolio get");
+            // System.out.println("reached redis portfolio get");
             try {
                 // building List<StockSummary> from raw json string
                 List<StockSummary> stockSumList = new LinkedList<>();
@@ -81,7 +76,7 @@ public class StockRepository {
 
         //mySQL
         List<StockSummary> stockSumList = new LinkedList<>();
-        stockSumList = templateSQL.query(SQL_SELECT_BY_EMAIL, BeanPropertyRowMapper.newInstance(StockSummary.class), email);
+        stockSumList = templateSQL.query(sql.sql_selectByEmail, BeanPropertyRowMapper.newInstance(StockSummary.class), email);
         
         // Convert List<StockSummary> to JSON string and cache in Redis
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
@@ -118,7 +113,7 @@ public class StockRepository {
         template.getCouchbaseClientFactory().getBucket().defaultCollection().upsert(symbol, jsonString, options);
         
         //store in redis raw json string, 15 min
-        System.out.println("inserted in to redis");
+        // System.out.println("inserted in to redis");
         templateRedis.opsForValue().set(symbol, jsonString, Duration.ofMinutes(15));
 
         return symbol;

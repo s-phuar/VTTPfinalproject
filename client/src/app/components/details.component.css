@@ -1,0 +1,150 @@
+.parent {
+  padding: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 95vh;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: black;
+  padding: 8px 16px;
+  align-items: center;
+}
+
+.left-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-button,
+.back-button {
+  height: 36px;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.search-card {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.search-content {
+  display: flex;
+  justify-content: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between input and button */
+  width: 100%;
+}
+
+.search-input {
+  flex: 1; /* input box to take remaining space */
+}
+
+.search-button {
+  height: 40px;
+}
+
+.stock-details {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.stock-info-card {
+  margin-top: 16px;
+  max-width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-table-card {
+  margin-top: 16px;
+  max-width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mat-header-row,
+.mat-row {
+  display: table-row;
+}
+
+.mat-header-cell,
+.mat-cell {
+  display: table-cell;
+  padding: 12px;
+  word-wrap: break-word;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.mat-header-cell {
+  background-color: rgb(110, 108, 108);
+  color: whitesmoke;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.mat-cell:nth-child(1) {
+  width: 15%; /* Name column */
+}
+
+.mat-cell:nth-child(2) {
+  width: 5%; /* Value column */
+}
+
+.mat-cell:nth-child(3) {
+  width: 40%; /* Formula column */
+}
+
+.mat-cell:nth-child(4) {
+  width: 40%;
+}
+
+.formula {
+  color: #008000;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+}
+
+.centered-header {
+  display: flex;
+  justify-content: center;
+}
+
+.stock-info-content {
+  padding: 20px;
+}
+
+.company-image {
+  max-width: 200px;
+  max-height: 200px;
+  margin-bottom: 16px;
+}

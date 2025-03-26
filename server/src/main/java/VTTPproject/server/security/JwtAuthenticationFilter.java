@@ -33,10 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     //filter logic, checks for valid token in auth http req header
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException{
-        System.out.println("Secret Key: " + secretKey); // Debug injection
-        String header = request.getHeader("Authorization");
-        System.out.println("Authorization Header: " + header); // Debug header
-        
+        String header = request.getHeader("Authorization");        
         if(header == null || !header.startsWith("Bearer")){
             System.out.println("No Bearer token found, REJECTING REQUEST"); //Debug
             chain.doFilter(request, response);

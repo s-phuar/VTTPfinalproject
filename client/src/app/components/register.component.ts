@@ -16,12 +16,12 @@ export class RegisterComponent implements OnInit, OnDestroy{
   private fb = inject(FormBuilder)
 
   protected form !:FormGroup
-  private sub !: Subscription
+  protected sub !: Subscription
 
-  message = ''
+  protected message = ''
 
-  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  private passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  private passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
   ngOnInit(): void {
     this.form = this.createAccountForm()
@@ -43,36 +43,36 @@ export class RegisterComponent implements OnInit, OnDestroy{
 
   register(){
     if (this.form.get('name')?.invalid) {
-      this.message = 'Name is required';
-      return;
+      this.message = 'Name is required'
+      return
     }
 
     if (this.form.get('email')?.invalid) {
       if (this.form.get('email')?.errors?.['required']) {
-        this.message = 'Email is required';
+        this.message = 'Email is required'
       } else if (this.form.get('email')?.errors?.['pattern']) {
-        this.message = 'Please enter a valid email address';
+        this.message = 'Please enter a valid email address'
       }
-      return;
+      return
     }
 
     if (this.form.get('password')?.invalid) {
       if (this.form.get('password')?.errors?.['required']) {
-        this.message = 'Password is required';
+        this.message = 'Password is required'
       } else if (this.form.get('password')?.errors?.['pattern']) {
-        this.message = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+        this.message = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character'
       }
-      return;
+      return
     }
 
     if (this.form.get('password2')?.invalid) {
-      this.message = 'Please confirm your password';
-      return;
+      this.message = 'Please confirm your password'
+      return
     }
 
     if (this.form.value['password'] !== this.form.value['password2']) {
-      this.message = 'Passwords do not match';
-      return;
+      this.message = 'Passwords do not match'
+      return
     }
 
     const details: Register = this.form.value

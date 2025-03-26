@@ -1,55 +1,57 @@
-<h2>Register account</h2>
+<div  class="parent">
+<mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Register</mat-card-title>
+    </mat-card-header>
+  
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="register()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput type="text" formControlName="name" placeholder="Enter your name">
+          <mat-error *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Enter your email">
+          <mat-error *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+            <span *ngIf="form.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="form.get('email')?.errors?.['pattern']">Invalid email format</span>
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Enter your password">
+          <mat-error *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+            <span *ngIf="form.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="form.get('password')?.errors?.['pattern']">
+              Password must be 8+ characters with uppercase, lowercase, number, and special character
+            </span>
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="password" formControlName="password2" placeholder="Confirm your password">
+          <mat-error *ngIf="form.get('password2')?.touched && form.get('password2')?.invalid">
+            Please confirm your password
+          </mat-error>
+        </mat-form-field>
 
-
-<form [formGroup]="form" (submit)="register()">
-    <table>
-        <tr>
-            <td>Name:</td>
-            <td><input type="text" size="30" formControlName="name">
-                <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="error">
-                    Name is required
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td><input type="text" size="30" formControlName="email">
-                <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="error">
-                    <div *ngIf="form.get('email')?.errors?.['required']">Email is required</div>
-                    <div *ngIf="form.get('email')?.errors?.['pattern']">Invalid email format</div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input type="text" size="30" formControlName="password">
-                <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="error">
-                    <div *ngIf="form.get('password')?.errors?.['required']">Password is required</div>
-                    <div *ngIf="form.get('password')?.errors?.['pattern']">
-                        Password must be 8+ characters with uppercase, lowercase, number, and special character
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Confirm Password:</td>
-            <td><input type="text" size="30" formControlName="password2">
-                <div *ngIf="form.get('password2')?.touched && form.get('password2')?.invalid" class="error">
-                    Please confirm your password
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>{{message}}</td>
-        </tr>
-
-        <button type="button" (click)="clear()">Clear</button>
-        <button type="submit">Register</button>
-        <button type="button" [routerLink]="['/']">Back</button>
-
-    </table>
-
-</form>
-
-
+        <div *ngIf="message" class="message">{{message}}</div> 
+        <br>
+  
+        <mat-card-actions class="button-group">
+          <button mat-raised-button color="primary" type="submit" class="full-width">Register</button>
+          <button mat-button type="button" (click)="clear()" class="full-width">Clear</button>
+          <button mat-button type="button" [routerLink]="['/login']" class="full-width">Back to Login</button>
+        </mat-card-actions>
+  
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

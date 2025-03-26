@@ -40,7 +40,7 @@ public class StockService {
     private final Timer stockSearchTimer;
     private final Counter stockSearchCounter;
 
-    public static final String GET_URL = "https://financialmodelingprep.com/api/v3/";
+    private static final String GET_URL = "https://financialmodelingprep.com/api/v3/";
 
 
     @Autowired
@@ -79,7 +79,7 @@ public class StockService {
                 return Stock.toStockJson(mi, ar, lr, pr, sr, vr);
             }
             //returning json from database
-            System.out.println("returning json from database \n\n\n");
+            // System.out.println("returning json from database \n\n\n");
             return stockJson.get();
         });     
     }
@@ -192,7 +192,7 @@ public class StockService {
 
     
     public List<StockSummary> getPortfolio(String email){
-        System.out.println("reached redis portfolio service");
+        // System.out.println("reached redis portfolio service");
 
         return stockRepository.getPortfolio(email);
     }

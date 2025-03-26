@@ -14,6 +14,11 @@ export interface StockSlice{
     stocks: Stock[]
 }
 
+export interface StockSummary{
+    symbol: string
+    companyName: string
+}
+
 export interface Stock{
     mi: MiscItems
     ar: ActivityRatios
@@ -21,11 +26,6 @@ export interface Stock{
     sr: SolvencyRatios
     pr: ProfitabilityRatios
     vr: ValuationRatios
-}
-
-export interface StockSummary{
-    symbol: string
-    companyName: string
 }
 
 export interface MiscItems{

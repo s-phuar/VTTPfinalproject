@@ -33,12 +33,12 @@ public class StockController {
     @GetMapping(path = "/api/search/{ticker}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> searchDetails(@PathVariable String ticker){
 
-        System.out.println("You reached stock search...");
+        // System.out.println("You reached stock search...");
         //angular http interceptor sends over a token which basically contains the email's hash
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null){
             try{
-                System.out.println("triggered search next");
+                // System.out.println("triggered search next");
                 JsonObject stockJson = stockService.searchDetails(ticker);
         
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(stockJson.toString());
@@ -51,7 +51,7 @@ public class StockController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.toString());
             }
         }else{
-            System.out.println("triggered search error");
+            // System.out.println("triggered search error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();
@@ -64,7 +64,7 @@ public class StockController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null){
-            System.out.println("triggered save next");
+            // System.out.println("triggered save next");
             String symbol = stockService.saveStock(stock, email);
 
             JsonObject resp = Json.createObjectBuilder()
@@ -72,7 +72,7 @@ public class StockController {
                 .build();
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resp.toString());
         }else{
-            System.out.println("triggered save error");
+            // System.out.println("triggered save error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();
@@ -84,7 +84,7 @@ public class StockController {
     public ResponseEntity<String> deleteStock(@RequestParam String symbol, @RequestParam String email){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null){
-            System.out.println("triggered dashboard next");
+            // System.out.println("triggered dashboard next");
             stockService.deleteStock(symbol, email); 
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Deleted from portfolio: " + symbol)
@@ -92,7 +92,7 @@ public class StockController {
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(resp.toString());
         }else{
-            System.out.println("triggered dashboard error");
+            // System.out.println("triggered dashboard error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();
@@ -120,7 +120,7 @@ public class StockController {
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(jsonString);
         }else{
-            System.out.println("triggered dashboard error");
+            // System.out.println("triggered dashboard error");
             JsonObject resp = Json.createObjectBuilder()
                 .add("message", "Please login first")
                 .build();

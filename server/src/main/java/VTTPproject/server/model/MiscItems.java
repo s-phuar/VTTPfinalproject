@@ -1,5 +1,7 @@
 package VTTPproject.server.model;
 
+import java.math.BigInteger;
+
 import VTTPproject.server.utils.Utils;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -10,7 +12,7 @@ public class MiscItems {
     private double price;
     private double dcf;
     private double beta;
-    private int mktCap;
+    private BigInteger mktCap;
     private String image;
     private String description;
     private String todayEpochMilli;
@@ -25,8 +27,8 @@ public class MiscItems {
     public void setDcf(double dcf) {this.dcf = dcf;}
     public double getBeta() {return beta;}
     public void setBeta(double beta) {this.beta = beta;}
-    public int getMktCap() {return mktCap;}
-    public void setMktCap(int mktCap) {this.mktCap = mktCap;}
+    public BigInteger getMktCap() {return mktCap;}
+    public void setMktCap(BigInteger mktCap) {this.mktCap = mktCap;}
     public String getImage() {return image;}
     public void setImage(String image) {this.image = image;}
     public String getDescription() {return description;}
@@ -49,10 +51,11 @@ public class MiscItems {
         mi.setPrice(Utils.roundValue(companyInfo.getJsonNumber("price").doubleValue()));
         mi.setDcf(Utils.roundValue(companyInfo.getJsonNumber("dcf").doubleValue()));
         mi.setBeta(Utils.roundValue(companyInfo.getJsonNumber("beta").doubleValue()));
-        mi.setMktCap(companyInfo.getInt("mktCap"));
+        mi.setMktCap(companyInfo.getJsonNumber("mktCap").bigIntegerValue());
         mi.setImage(companyInfo.getString("image"));
         mi.setDescription(companyInfo.getString("description"));
         mi.setTodayEpochMilli(Utils.currEpochMilli());
+
     
         return mi;
     }

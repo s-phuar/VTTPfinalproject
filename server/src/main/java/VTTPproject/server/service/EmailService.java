@@ -20,9 +20,14 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("VTTP Team <" + myEmail + ">");
         message.setTo(newEmail);
-        message.setSubject("Welcome to the stock thingy!"); //***************** update this subject
-        message.setText("Hi " + name + ",\n\nYour account has been successfully created. Welcome aboard!");
-
+        message.setSubject("Welcome to Quick Reports!");
+        message.setText(
+            "Dear " + name + ",\n\n" +
+            "Welcome to Quick Reports! We're thrilled to have you join our community. Your account has been successfully created, and we're excited to support you in exploring all that Quick Reports has to offer.\n\n" +
+            "Feel free to dive in and start schoomzing numbers. If you have any questions or need assistance, our team is here to help—just reach out to us anytime.\n\n" +
+            "Warm regards,\n" +
+            "The VTTP Team"
+        );
         try{
             mailSender.send(message);
         }catch(Exception e){

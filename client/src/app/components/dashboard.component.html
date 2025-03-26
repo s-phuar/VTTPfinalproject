@@ -1,35 +1,58 @@
-<h1>Stock Dashboard!</h1>
-
-<!-- search stock via ticker  -->
-<form [formGroup]="form" (submit)="search()">
-    <tr>
-        <td></td>
-        <td><input type="text" size="30" formControlName="ticker"></td>
-    </tr>
-
-
-    <button type="submit" [disabled]="form.invalid">Search</button>
-</form>
-
-<button (click)="donate()">Donate</button>
-
-<button type="button" [routerLink]="['/logout']">Logout</button>
-
-<!-- prometeus access -->
-<button *ngIf="isAdminUser()" (click)="openPrometheus()">View Metrics</button>
-
-<!-- display current list of stock associated with user -->
-<h2>Portfolio</h2>
-
-@for (stock of stockSum; let idx = $index; track stock.symbol) {
-    <a [routerLink]="['/details']" [queryParams]="{ ticker: stock.symbol }">
-        {{ stock.symbol }} ({{ stock.companyName }})
-    </a>
-<button (click)="delete(stock.symbol)">Delete</button>
-<br>
-}
-
-@empty {
-    <h2>portfolio is empty!</h2>
-}
-
+<div class="parent">
+    <!-- black top bar with buttons -->
+    <div class="top-bar">
+      <div class="left-container">
+        <button mat-raised-button color="basic" class="logout-button" type="button" [routerLink]="['/logout']">
+          Logout
+        </button>
+        <button mat-raised-button color="accent" class="prometheus-button" *ngIf="isAdminUser()" (click)="openPrometheus()">
+          View Metrics
+        </button>
+      </div>
+      <div class="center-container">
+        <h1 class="email-header">Portfolio for: {{ email }}</h1>
+      </div>
+      <div class="right-container">
+        <button mat-raised-button color="accent" class="donate-button" type="button" (click)="donate()">
+          Donate
+        </button>
+      </div>
+    </div>
+  
+    <!-- search box -->
+    <div class="search-container">
+      <mat-card class="search-card">
+        <mat-card-content class="search-content">
+          <form [formGroup]="form" (submit)="search()" class="search-form">
+            <mat-form-field appearance="outline" class="search-input">
+              <mat-label>Search Ticker</mat-label>
+              <input matInput type="text" formControlName="ticker" placeholder="Search Ticker...">
+            </mat-form-field>
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="search-button">
+              Search
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+    <!-- portfolio section -->
+    <div class="stocks-list">
+      <div class="stock-items">
+        <div *ngFor="let stock of stockSum; let idx = index; trackBy: trackBySymbol" class="stock-item">
+          <div class="stock-info">
+            <a [routerLink]="['/details']" [queryParams]="{ ticker: stock.symbol }">
+              <span class="company-name">{{ stock.companyName | uppercase }}</span>
+              <span class="stock-ticker"> ({{ stock.symbol }})</span>
+            </a>
+          </div>
+          <button mat-raised-button color="warn" class="delete-button" (click)="delete(stock.symbol)">
+            Delete
+          </button>
+        </div>
+        <div *ngIf="!stockSum || stockSum.length === 0">
+          <h2>Portfolio is empty!</h2>
+        </div>
+      </div>
+    </div>
+  </div>

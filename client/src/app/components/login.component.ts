@@ -18,9 +18,12 @@ export class LoginComponent implements OnInit, OnDestroy{
   private fb = inject(FormBuilder)
 
   protected form !:FormGroup
-  private sub !: Subscription
+  protected sub !: Subscription
 
-  message = ''
+  protected message = ''
+
+  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  private passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 
   ngOnInit(): void {
@@ -30,8 +33,8 @@ export class LoginComponent implements OnInit, OnDestroy{
 
   private createAccountForm():FormGroup{
     return this.fb.group({
-      email: this.fb.control<string>('', [Validators.required, Validators.minLength(1)]),
-      password: this.fb.control<string>('', [Validators.required, Validators.minLength(1)])
+      email: this.fb.control<string>('', [Validators.required, Validators.pattern(this.emailPattern)]),
+      password: this.fb.control<string>('', [Validators.required, Validators.pattern(this.passwordPattern)])
     })
   }
 
@@ -41,11 +44,9 @@ export class LoginComponent implements OnInit, OnDestroy{
     this.sub = this.loginSvc.login(details).subscribe({
       next: (resp) => {
         console.info('triggered login next')
-        console.log('Token received:', resp.token); // Debug token from response
-        this.loginSvc.setToken(resp.token) //overwrite existing token with fresh token
+        this.loginSvc.setToken(resp.token) //overwrite existing token with fresh token every login
         this.loginSvc.setEmail(details.email)
-        console.log('Token stored:', this.loginSvc.getToken()); // Verify storage
-        this.router.navigate(['/dashboard']) //not yet implemented ***************************
+        this.router.navigate(['/dashboard'])
       },
       error: (err) => {
         console.info('triggered login error')
