@@ -4,11 +4,11 @@
     "description": "Summarize your stock in one search!",
     "theme_color": "#ffffff",
     "background_color": "#385fad",
-    "display": "browser",
+    "display": "standalone",
     "orientation": "portrait",
     "scope": "/",
     "start_url": "/",
-    "id":"/",
+    "id": "/",
     "icons": [
         {
             "src": "icons/16x16.png",

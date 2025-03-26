@@ -21,8 +21,7 @@ public class SecurityConfig{
             .anonymous(anonymous -> anonymous.disable())
             .authorizeHttpRequests(authorize -> {
                 authorize.requestMatchers("/api/creation", "/api/login", "/api/logout", "/api/search", "/api/save", "/api/portfolio", "/api/delete", "/api/donate").permitAll()
-                        .requestMatchers("/", "/index.html", "/*.png", "/*.ico", "*.js", "*/json", "/*.css").permitAll()        
-                        // actuator/prometeus for admin only
+                        .requestMatchers("/", "/icons/**","/index.html", "/**.js", "/**.css", "/**.html", "/**.ico", "/**.jpg", "/**.png", "/manifest.json").permitAll()                        // actuator/prometeus for admin only
                         .requestMatchers("/actuator/prometheus").access((authentication, context) -> {
                             Authentication auth = authentication.get();
                             if (auth == null || !auth.isAuthenticated()) {
