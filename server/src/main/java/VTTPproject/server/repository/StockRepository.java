@@ -1,24 +1,29 @@
 package VTTPproject.server.repository;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.couchbase.core.CouchbaseTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Sort;
 
-import com.couchbase.client.core.error.DocumentNotFoundException;
-import com.couchbase.client.java.Collection;
-import com.couchbase.client.java.kv.UpsertOptions;
+
 import VTTPproject.server.model.StockSummary;
 import VTTPproject.server.utils.Utils;
 import VTTPproject.server.utils.sql;
+import jakarta.annotation.PostConstruct;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
@@ -29,8 +34,18 @@ import jakarta.json.JsonValue;
 @Repository
 public class StockRepository {
     @Autowired
-    private CouchbaseTemplate template;
+    private MongoTemplate mongoTemplate;
 
+    @PostConstruct
+    public void init() {
+        mongoTemplate.indexOps("stocks").ensureIndex(
+            new org.springframework.data.mongodb.core.index.Index()
+                .on("createdAt", Sort.Direction.ASC)
+                .expire(Duration.ofMinutes(1440)) 
+        );
+    }
+
+    
     @Autowired @Qualifier("redis-string")
     private RedisTemplate<String, String> templateRedis;
 
@@ -109,9 +124,13 @@ public class StockRepository {
 
         //upsert raw json string to couchbase, 1 day
         String jsonString = jObj.toString();
-        UpsertOptions options = UpsertOptions.upsertOptions().expiry(Duration.ofMinutes(1440));
-        template.getCouchbaseClientFactory().getBucket().defaultCollection().upsert(symbol, jsonString, options);
-        
+
+        Document doc = new Document("_id", symbol)
+            .append("data", jsonString)
+            .append("createdAt", Instant.now());
+        mongoTemplate.save(doc, "stocks");
+
+
         //store in redis raw json string, 15 min
         // System.out.println("inserted in to redis");
         templateRedis.opsForValue().set(symbol, jsonString, Duration.ofMinutes(15));
@@ -128,16 +147,15 @@ public class StockRepository {
             return Optional.of(jsonObj);
         }
 
-        //of not check couchbase
-        Collection collection = template.getCouchbaseClientFactory().getBucket().defaultCollection();
-            try {
-                // Retrieve document by key
-                String jsonString = collection.get(ticker).contentAs(String.class);
-                JsonObject jsonObj = Utils.strToJson(jsonString);
-                return Optional.of(jsonObj);
-            } catch (DocumentNotFoundException e) {
-                return Optional.empty();
-            }
+        //if not check couchbase
+        Query query = new Query(Criteria.where("_id").is(ticker));
+        Document doc = mongoTemplate.findOne(query, Document.class, "stocks");
+        if (doc != null) {
+            String jsonString = doc.getString("data");
+            JsonObject jsonObj = Utils.strToJson(jsonString);
+            return Optional.of(jsonObj);
+        }
+        return Optional.empty();
     }
 
     
