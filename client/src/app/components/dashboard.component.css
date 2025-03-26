@@ -50,7 +50,8 @@
 }
 
 .search-card {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -137,4 +138,92 @@
   font-size: 20px;
   font-weight: bold;
   color: white;
+}
+
+
+@media (max-width: 768px) {
+.parent {
+  padding: 8px; /* Reduce padding */
+}
+
+.top-bar {
+  flex-direction: column; /* Stack vertically */
+  padding: 8px;
+  gap: 8px;
+}
+
+.left-container,
+.center-container,
+.right-container {
+  flex: none;
+  width: 100%; /* Full width for stacking */
+  justify-content: center; /* Center items */
+}
+
+.left-container {
+  gap: 4px; /* Reduce gap between buttons */
+}
+
+.email-header {
+  font-size: 16px; /* Smaller font */
+}
+
+.stocks-list h2 {
+  font-size: 20px; /* Smaller heading */
+}
+
+.stock-items {
+  flex-direction: column; /* Stack stock items */
+  align-items: center;
+}
+
+.stock-item {
+  width: 100%; /* Full width */
+  max-width: 300px; /* Cap width */
+}
+
+.search-card {
+  max-width: 100%; /* Full width */
+  padding: 8px;
+}
+
+.search-form {
+  flex-direction: column; /* Stack input and button */
+  gap: 12px;
+}
+
+.search-input,
+.search-button {
+  width: 100%; /* Full width */
+}
+
+.company-name {
+  font-size: 16px; /* Smaller font */
+}
+
+.stock-ticker {
+  font-size: 14px; /* Smaller font */
+}
+}
+
+/* Extra small screens (below 480px) */
+@media (max-width: 480px) {
+.stocks-list {
+  padding: 10px; /* Reduce padding */
+}
+
+.email-header {
+  font-size: 14px; /* Even smaller font */
+}
+
+.logout-button,
+.prometheus-button,
+.donate-button {
+  height: 32px;
+  font-size: 12px;
+}
+
+.search-button {
+  height: 36px;
+}
 }

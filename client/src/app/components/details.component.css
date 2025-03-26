@@ -41,7 +41,8 @@
 }
 
 .search-card {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -147,4 +148,94 @@
   max-width: 200px;
   max-height: 200px;
   margin-bottom: 16px;
+}
+
+
+@media (max-width: 768px) {
+.parent {
+  padding: 8px;
+}
+
+.top-bar {
+  flex-direction: column;
+  padding: 8px;
+  gap: 8px;
+}
+
+.left-container,
+.right-container {
+  flex: none;
+  width: 100%;
+  justify-content: center;
+}
+
+.search-card {
+  max-width: 100%;
+  padding: 8px;
+}
+
+.search-form {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-input,
+.search-button {
+  width: 100%;
+}
+
+.stock-info-card {
+  max-width: 100%;
+}
+
+.mat-table-card {
+  max-width: 100%;
+}
+
+.mat-table {
+  display: block;
+  overflow-x: auto;
+}
+
+.mat-header-row,
+.mat-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-header-cell,
+.mat-cell {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+}
+
+.mat-cell:nth-child(1),
+.mat-cell:nth-child(2),
+.mat-cell:nth-child(3),
+.mat-cell:nth-child(4) {
+  width: 100%;
+}
+
+.company-image {
+  max-width: 150px;
+  max-height: 150px;
+}
+}
+
+@media (max-width: 480px) {
+.add-button,
+.back-button {
+  height: 32px; 
+  font-size: 12px;
+}
+
+.search-button {
+  height: 36px;
+}
+
+.stock-info-content {
+  padding: 10px;
+}
 }
