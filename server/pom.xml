@@ -96,7 +96,7 @@
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-API</artifactId>
+			<artifactId>jjwt-api</artifactId>
 			<version>0.12.5</version>
 		</dependency>
 		<dependency>

@@ -8,12 +8,15 @@ import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.core.convert.CouchbaseCustomConversions;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
 
+import com.couchbase.client.java.env.ClusterEnvironment;
+
+import java.nio.file.Paths;
 import java.util.Collections;
 
 @Configuration
 @EnableCouchbaseRepositories
 public class CouchbaseConfig extends AbstractCouchbaseConfiguration{
-    @Value("${spring.couchbase.connection-string}")
+    @Value("${spring.couchbase.connection.string}")
     private String connectionString;
 
     @Value("${spring.couchbase.username}")
@@ -45,9 +48,17 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration{
         return username;
     }
 
-    @Bean @Primary
+    @Override
+    protected void configureEnvironment(ClusterEnvironment.Builder builder) {
+        builder.securityConfig(security -> {
+            security.enableTls(true)
+                   .trustCertificate(Paths.get("/app/couchbase-cert.pem")); // Path to cert in container
+        });
+    }
+
+    @Bean
+    @Primary
     public CouchbaseCustomConversions customConversions() {
-        // Define an empty list of converters or add custom ones if needed
         return new CouchbaseCustomConversions(Collections.emptyList());
     }
 

@@ -36,6 +36,7 @@ FROM openjdk:23-jdk
 
 WORKDIR /app
 COPY --from=j-build /src/target/server-0.0.1-SNAPSHOT.jar app.jar
+COPY server/couchbase-cert.pem.txt /app/couchbase-cert.pem
 
 ENV PORT=8080
 
@@ -50,7 +51,6 @@ ENV SPRING_DATA_COUCHBASE_BUCKET_NAME=
 
 ENV SPRING_DATA_REDIS_HOST=
 ENV SPRING_DATA_REDIS_PORT=
-ENV SPRING_DATA_REDIS_DATABASE=
 ENV SPRING_DATA_REDIS_USERNAME=
 ENV SPRING_DATA_REDIS_PASSWORD=
 
