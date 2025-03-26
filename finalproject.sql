@@ -23,8 +23,8 @@ CREATE TABLE stocks(
 );
 
 drop table credentials;
-drop table users;
 drop table stocks;
+drop table users;
 
 select * from users;
 select * from credentials;

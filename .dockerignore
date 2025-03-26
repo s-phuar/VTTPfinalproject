@@ -1,0 +1,6 @@
+# ignore client side files
+client/node_modules
+client/dist
+
+#ignore serve side fiiles
+server/target

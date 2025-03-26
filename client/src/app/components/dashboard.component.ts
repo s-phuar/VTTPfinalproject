@@ -84,8 +84,8 @@ export class DashboardComponent implements OnInit{
 
   // Open Prometheus metrics in a new tab
   openPrometheus() {
-    const prometheusUrl = 'http://localhost:8080/actuator/prometheus'
-    // const prometheusUrl = 'https://captivating-elegance-production.up.railway.app/actuator/prometheus'
+    // const prometheusUrl = 'http://localhost:8080/actuator/prometheus'
+    const prometheusUrl = 'https://captivating-elegance-production.up.railway.app/actuator/prometheus'
     window.open(prometheusUrl, '_blank')
   }
   
